@@ -14,8 +14,9 @@ use Laravel\Ai\Providers\Provider;
 /**
  * A Laravel AI SDK classification provider backed by Parallel Decisions.
  *
- * Parallel has no models. The SDK's model argument selects the Decisions
- * `mode`, and `fast` is the only mode Parallel offers.
+ * Parallel has no models. The SDK model `decisions-fast` selects the
+ * Decisions `fast` mode, the only mode Parallel offers, and matches the
+ * `parallel:decisions-fast` price in Laravel AI Pricing.
  */
 class ParallelDecisionsProvider extends Provider implements ClassificationProvider
 {
@@ -42,7 +43,7 @@ class ParallelDecisionsProvider extends Provider implements ClassificationProvid
     {
         $model = data_get($this->config, 'models.classification.default');
 
-        return is_string($model) ? $model : ParallelDecisionsGateway::MODE_FAST;
+        return is_string($model) ? $model : ParallelDecisionsGateway::MODEL_FAST;
     }
 
     public function classificationGateway(): ClassificationGateway
