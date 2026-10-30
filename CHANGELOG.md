@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-30
+
 ### Added
 
 - `parallel` driver for the Laravel AI SDK's `Classification::of()`, backed by `POST https://api.parallel.ai/v1/decisions`.
@@ -17,4 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `InvalidDecisionResponse` for responses that do not match the questions asked, carrying the decision ID and usage when reported.
 - Rate limits, exhausted credits and outages raise the SDK's failover exceptions.
 
-[Unreleased]: https://github.com/jkudish/laravel-ai-parallel-decisions/commits/main
+[Unreleased]: https://github.com/jkudish/laravel-ai-parallel-decisions/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/jkudish/laravel-ai-parallel-decisions/releases/tag/v0.1.0

@@ -9,7 +9,7 @@
 ## Checklist
 
 - [ ] I added or updated tests for behavioral changes.
-- [ ] I preserved decimal arithmetic and explicit completeness semantics.
+- [ ] Refusals stay distinct from answers, and invalid responses still throw.
 - [ ] I updated documentation and the changelog when needed.
 - [ ] `composer test` passes.
 - [ ] `composer analyse` passes.

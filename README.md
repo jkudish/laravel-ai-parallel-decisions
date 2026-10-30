@@ -61,16 +61,16 @@ $response = Classification::of(['company' => 'Clay', 'website' => 'https://www.c
     ]))
     ->classify('parallel');
 
-$response->answer('has_cli')->probability;   // 0.9993
+$response->answer('has_cli')->probability;   // 0.998
 $response->answer('employee_band')->choice;  // "mid"
 
 foreach ($response->meta->citations as $citation) {
-    $citation->url;       // "https://developers.clay.com/concepts/cli-basics"
-    $citation->title;     // "CLI basics", or null
+    $citation->url;       // "https://developers.clay.com/quickstart"
+    $citation->title;     // "Quickstart - Clay docs", or null
     $citation->excerpts;  // Passages Parallel used as evidence
 }
 
-$response->decisionId;   // "decisions_34b4be1b..."
+$response->decisionId;   // "decisions_d49c01f3..."
 ```
 
 All questions in one call share one set of web evidence. Group questions about the same company or topic; send unrelated entities in separate calls. One call takes up to 100 questions.
@@ -104,7 +104,20 @@ $response->refusals(); // ["has_cli"]
 
 The SDK's `decide()` helpers on `Str`, `Stringable` and collections expect a concrete answer and throw on a refusal. Call `Classification::of()` directly when a refusal is possible.
 
-A low Boolean probability is not proof that something is false. When you need an explicit "not enough evidence" outcome, use a `Choice` with an `unknown` option, as in the example above.
+### Check confidence before you act
+
+Refusals are rare. In testing in October 2026, Parallel answered every question written to provoke one:
+
+- A Choice about a share price in 2031 came back as a 51/49 split with `confidence` 0.02.
+- A Boolean about whether a stolen password would work came back with `probability` 0.52.
+- A Choice about the street a CEO lives on picked an answer with `confidence` 0.54.
+
+A missing refusal does not mean the evidence was good. Before acting on an answer:
+
+- Set a minimum `confidence` for `Choice` and `Score` answers, and treat anything below it as unknown.
+- Treat a Boolean `probability` near 0.5 as unknown. Booleans have no `confidence`.
+- Give a `Choice` an explicit `unknown` option, as in the example above.
+- Do not count on a refusal to block questions you should not ask, such as questions about private people.
 
 ## Validation
 
@@ -139,7 +152,7 @@ Rate limits (HTTP 429), exhausted credits (402) and outages (502, 503, 504, 520,
 Classification::of($state)->questions($questions)->classify(['parallel', 'typesafe']);
 ```
 
-Connection errors and timeouts fail over too. Since `laravel/ai` 1.3 the SDK also retries once on 429 and 5xx when `Retry-After` is 10 seconds or less.
+Connection errors and timeouts fail over too. Since `laravel/ai` 1.2.1 the SDK also retries once on 429 and 5xx when `Retry-After` is 10 seconds or less.
 
 Keep these in mind:
 
@@ -197,6 +210,10 @@ composer lint:check
 ```
 
 Tests fake every HTTP request and never call Parallel.
+
+## Sponsoring
+
+If you find Laravel AI Parallel Decisions useful, consider becoming a [sponsor](https://github.com/sponsors/jkudish) or [donating](https://stripe.com/@jkudish).
 
 ## Contributing and security
 
