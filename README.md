@@ -128,7 +128,7 @@ The package checks requests before sending them and refuses, with `InvalidDecisi
 - a choice has more than 255 options, or a score more than 10 levels;
 - Boolean criteria describe only one of the true and false cases;
 - instructions, criteria, options or levels are not plain text (Parallel accepts no images or structured content);
-- the model is anything but `fast`, or a provider option other than `include_excerpts` is passed.
+- the model is anything but `decisions-fast`, or a provider option other than `include_excerpts` is passed.
 
 Parallel also limits each question, with the shared state, to about 32,000 input tokens and 5,000 rendered characters. Parallel estimates those itself, so the package leaves them to the API.
 
@@ -138,7 +138,7 @@ Responses are checked against the questions you asked. `InvalidDecisionResponse`
 
 | Option | How to set it | Default |
 | --- | --- | --- |
-| Mode | `classify('parallel', 'fast')` | `fast`, the only mode Parallel offers |
+| Model | `classify('parallel', 'decisions-fast')` | `decisions-fast`, sent as Parallel's `fast` mode, the only mode it offers |
 | Excerpts | `->withProviderOptions(['include_excerpts' => false])` | `true`. With `false`, citations keep their URL and title but have no excerpts |
 | Timeout | `->timeout(15)` | 30 seconds |
 | Base URL | `'url' => '...'` in the provider config | `https://api.parallel.ai` |
@@ -172,7 +172,7 @@ A 422 validation error or an invalid response does not fail over.
 
 Parallel bills USD 1 per 1,000 requests, and one request carries up to 100 questions. See [Parallel pricing](https://docs.parallel.ai/getting-started/pricing). Each call is a paid request that reaches the web.
 
-The SDK's `Classified` event carries the `DecisionResponse`, so listeners can record `decisionId` and usage. To price a call with [Laravel AI Pricing](https://github.com/jkudish/laravel-ai-pricing) 0.4.3 or newer, quote one request:
+The SDK's `Classified` event carries the `DecisionResponse`, so listeners can record `decisionId` and usage. The model is `decisions-fast` in the `Classifying` and `Classified` events and in `$response->meta->model`, the same name [Laravel AI Pricing](https://github.com/jkudish/laravel-ai-pricing) 0.4.3 or newer prices it under. Quote one request:
 
 ```php
 use Jkudish\LaravelAiPricing\Facades\AiPricing;
@@ -194,7 +194,7 @@ use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\Data\TextUsage;
 
 Classification::fake([
-    new DecisionResponse(['has_cli' => new BooleanAnswer(0.9)], new TextUsage, new Meta('parallel', 'fast'), 'decisions_test'),
+    new DecisionResponse(['has_cli' => new BooleanAnswer(0.9)], new TextUsage, new Meta('parallel', 'decisions-fast'), 'decisions_test'),
 ]);
 ```
 

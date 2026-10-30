@@ -45,10 +45,14 @@ class ParallelDecisionsGateway implements ClassificationGateway
 
     public const string ENDPOINT = '/v1/decisions';
 
-    public const string MODE_FAST = 'fast';
+    /**
+     * The SDK model name, matching the `parallel:decisions-fast` price in
+     * Laravel AI Pricing. Requests send it as Parallel's `fast` mode.
+     */
+    public const string MODEL_FAST = 'decisions-fast';
 
-    /** @var list<string> */
-    public const array MODES = [self::MODE_FAST];
+    /** @var array<string, string> SDK model name => Parallel `mode`. */
+    public const array MODELS = [self::MODEL_FAST => 'fast'];
 
     public const int MAX_QUESTIONS = 100;
 
@@ -122,9 +126,7 @@ class ParallelDecisionsGateway implements ClassificationGateway
      */
     public function payload(string $model, string|array $state, array $questions, array $providerOptions = []): array
     {
-        if (! in_array($model, self::MODES, true)) {
-            throw new InvalidDecisionRequest("Parallel Decisions has no mode [{$model}]. Use one of: ".implode(', ', self::MODES).'.');
-        }
+        $mode = self::MODELS[$model] ?? throw new InvalidDecisionRequest("Parallel Decisions has no model [{$model}]. Use one of: ".implode(', ', array_keys(self::MODELS)).'.');
 
         $count = count($questions);
         if ($count < 1 || $count > self::MAX_QUESTIONS) {
@@ -149,7 +151,7 @@ class ParallelDecisionsGateway implements ClassificationGateway
         }
 
         // An object even when every key is numeric, such as "0" and "1", which PHP would encode as a list.
-        return [...$providerOptions, 'mode' => $model, 'state' => $state, 'questions' => (object) $mapped];
+        return [...$providerOptions, 'mode' => $mode, 'state' => $state, 'questions' => (object) $mapped];
     }
 
     /**
@@ -266,7 +268,8 @@ class ParallelDecisionsGateway implements ClassificationGateway
         if ($usage === null) {
             throw $fail('usage_invalid');
         }
-        if (! is_string($body['mode'] ?? null) || ! in_array($body['mode'], self::MODES, true)) {
+        $model = is_string($body['mode'] ?? null) ? array_search($body['mode'], self::MODELS, true) : false;
+        if (! is_string($model)) {
             throw $fail('mode_invalid');
         }
         if (! is_array($body['answers'] ?? null)) {
@@ -294,7 +297,7 @@ class ParallelDecisionsGateway implements ClassificationGateway
         return new DecisionResponse(
             $answers,
             $usage,
-            new Meta($providerName, $body['mode'], $this->citations($body['citations'] ?? null, $fail)),
+            new Meta($providerName, $model, $this->citations($body['citations'] ?? null, $fail)),
             $decisionId,
         );
     }

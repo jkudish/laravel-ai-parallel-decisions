@@ -159,7 +159,7 @@ it('hydrates typed answers, refusals, citations, usage and the decision id', fun
         ->and($response->usage->inputTokens)->toBe(4212)
         ->and($response->usage->outputTokens)->toBe(0)
         ->and($response->meta->provider)->toBe('parallel')
-        ->and($response->meta->model)->toBe('fast')
+        ->and($response->meta->model)->toBe('decisions-fast')
         ->and($response->meta->citations)->toHaveCount(2)
         ->and($citations)->toHaveCount(2)
         ->and($citations[0])->toBeInstanceOf(DecisionCitation::class)
@@ -248,11 +248,11 @@ it('dispatches Classified with the DecisionResponse so spend guards can settle',
 
     Event::assertDispatched(Classified::class, fn (Classified $event): bool => $event->response instanceof DecisionResponse
         && $event->response->decisionId === DECISION_ID
-        && $event->model === 'fast');
+        && $event->model === 'decisions-fast' && $event->response->meta->model === 'decisions-fast');
 });
 
 it('keeps laravel/ai fakes working, including a faked DecisionResponse', function (): void {
-    $faked = new DecisionResponse(['flag' => new RefusalAnswer], new TextUsage, new Meta('parallel', 'fast'), DECISION_ID);
+    $faked = new DecisionResponse(['flag' => new RefusalAnswer], new TextUsage, new Meta('parallel', 'decisions-fast'), DECISION_ID);
     Classification::fake([$faked]);
 
     $response = Classification::of('Clay')->question('flag', new Boolean('Is Clay operating?'))->classify('parallel');
@@ -327,7 +327,8 @@ it('refuses a request that breaks a documented limit before sending it', functio
         array_fill(0, 256, 'An option'),
     )))->classify('parallel'), 'has 256 options; Parallel Decisions accepts at most 255'],
     'score with 11 levels' => [fn () => Classification::of('Clay')->question('rate', new Score('Rate it', array_fill(0, 11, 'A level')))->classify('parallel'), 'has 11 levels; Parallel Decisions accepts at most 10'],
-    'unknown mode' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?'))->classify('parallel', 'pro'), 'no mode [pro]'],
+    'unknown model' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?'))->classify('parallel', 'pro'), 'no model [pro]'],
+    'wire mode as the model' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?'))->classify('parallel', 'fast'), 'no model [fast]'],
     'boolean criteria with only the true case' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?', ['true' => 'Yes']))->classify('parallel'), 'both the true and the false case'],
     'empty boolean criteria' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?', []))->classify('parallel'), 'both the true and the false case'],
     'unknown provider option' => [fn () => Classification::of('Clay')->question('flag', new Boolean('Is it true?'))->withProviderOptions(['model' => 'x'])->classify('parallel'), 'does not accept the provider options: model'],
