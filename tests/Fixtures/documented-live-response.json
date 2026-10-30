@@ -1,0 +1,37 @@
+{
+  "mode": "fast",
+  "answers": {
+    "has_cli": {
+      "type": "noul",
+      "noul": 0.9992643798509062
+    }
+  },
+  "usage": {
+    "input_tokens": 4212,
+    "output_tokens": 0
+  },
+  "citations": [
+    {
+      "url": "https://developers.clay.com/concepts/cli-basics",
+      "title": "CLI basics",
+      "excerpts": [
+        "Understand the Clay CLI output contract, exit codes, environment variables, and authentication.\nThe Clay CLI (clay) is JSON-first: every command writes machine-readable JSON to stdout on success and a structured error envelope to stderr on failure.\nThere are no spinners, colors, or progress bars, so"
+      ]
+    },
+    {
+      "url": "https://university.clay.com/docs/cli-security-privacy",
+      "title": "CLI security & privacy - Clay Docs",
+      "excerpts": [
+        "Understand CLI authentication, role requirements, and how Clay handles data sent from your terminal.\nOverview\nClay's CLI lets your team drive a Clay workspace from a terminal or coding agent instead of the UI.\nBecause that means credentials live on a local machine and commands run outside the app, a"
+      ]
+    },
+    {
+      "url": "https://docs.clayplatform.io/claycli/docs/cli.html",
+      "title": "Claycli \u00b7 Clay CLI",
+      "excerpts": [
+        "Clay CLI ### 3.9.1\n* GitHub\nClaycli\nThis is the Clay command line utility. Here we will provide you with documentation and examples that will help you to run all the functionalities that you need. ##  Installation To install claycli you just need to type the following command: ``` $ npm install -g c"
+      ]
+    }
+  ],
+  "decision_id": "decisions_34b4be1b1405e19ba5516d9bb76c56ad"
+}

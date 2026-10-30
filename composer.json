@@ -1,0 +1,85 @@
+{
+    "name": "jkudish/laravel-ai-parallel-decisions",
+    "description": "Parallel Decisions as a Laravel AI SDK classification provider: typed answers grounded in live web evidence, with citations.",
+    "keywords": [
+        "ai",
+        "classification",
+        "decisions",
+        "laravel",
+        "laravel-ai",
+        "parallel",
+        "web-grounding"
+    ],
+    "homepage": "https://github.com/jkudish/laravel-ai-parallel-decisions",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Joey Kudish",
+            "email": "joey@jkudish.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/jkudish/laravel-ai-parallel-decisions/issues",
+        "source": "https://github.com/jkudish/laravel-ai-parallel-decisions"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/jkudish"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/contracts": "^12.0||^13.0",
+        "illuminate/http": "^12.0||^13.0",
+        "illuminate/support": "^12.0||^13.0",
+        "laravel/ai": "^1.0.1"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.9.5",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^5.0",
+        "pestphp/pest-plugin-arch": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jkudish\\LaravelAiParallelDecisions\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jkudish\\LaravelAiParallelDecisions\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "test": "vendor/bin/pest",
+        "format": "vendor/bin/pint",
+        "lint:check": "vendor/bin/pint --test"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jkudish\\LaravelAiParallelDecisions\\ParallelDecisionsServiceProvider"
+            ]
+        }
+    },
+    "prefer-stable": true
+}
